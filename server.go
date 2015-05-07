@@ -21,6 +21,7 @@ type Message struct {
 // Server publishing requests as Messages.
 type Server struct {
 	Topic     string
+	Secret    string
 	Publisher publisher
 	Log       *log.Logger
 }
@@ -38,6 +39,14 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // Publish requests to NSQD.
 func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
 	var body map[string]interface{}
+
+	secret := r.URL.Query().Get("secret")
+
+	if s.Secret != "" && s.Secret != secret {
+		s.Log.Printf("invalid secret")
+		http.Error(w, http.StatusText(403), 403)
+		return
+	}
 
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {

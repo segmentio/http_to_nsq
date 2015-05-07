@@ -42,6 +42,53 @@ func TestServer_ServeHTTP_POST(t *testing.T) {
 	assert.Equal(t, ":)", w.Body.String())
 }
 
+func TestServer_ServeHTTP_secret_invalid(t *testing.T) {
+	p := new(pub)
+
+	s := Server{
+		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
+		Topic:     "builds",
+		Secret:    "wahoo",
+		Publisher: p,
+	}
+
+	b := bytes.NewBufferString(`{ "foo": "bar" }`)
+
+	r, err := http.NewRequest("POST", "/build", b)
+	assert.Equal(t, nil, err)
+	r.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	s.ServeHTTP(w, r)
+
+	assert.Equal(t, 0, len(p.msgs))
+	assert.Equal(t, 403, w.Code)
+	assert.Equal(t, "Forbidden\n", w.Body.String())
+}
+
+func TestServer_ServeHTTP_secret_correct(t *testing.T) {
+	p := new(pub)
+
+	s := Server{
+		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
+		Topic:     "builds",
+		Secret:    "wahoo",
+		Publisher: p,
+	}
+
+	b := bytes.NewBufferString(`{ "foo": "bar" }`)
+
+	r, err := http.NewRequest("POST", "/build?secret=wahoo", b)
+	assert.Equal(t, nil, err)
+	r.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	s.ServeHTTP(w, r)
+
+	assert.Equal(t, 1, len(p.msgs))
+	assert.Equal(t, 200, w.Code)
+}
+
 func TestServer_ServeHTTP_malformedJSON(t *testing.T) {
 	p := new(pub)
 

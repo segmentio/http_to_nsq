@@ -17,6 +17,7 @@ const Usage = `
 
   Options:
     --topic name             nsqd topic name
+    --secret secret          secret string [default: ]
     --address addr           bind address [default: localhost:3000]
     --nsqd-tcp-address addr  nsqd tcp address [default: localhost:4150]
     -h, --help               output help information
@@ -35,7 +36,8 @@ func main() {
 	nsqd := args["--nsqd-tcp-address"].(string)
 
 	log.Printf("starting http_to_nsq %s", Version)
-	log.Printf("publishing to %s as topic %q", nsqd, topic)
+	log.Printf("--> binding to %s", addr)
+	log.Printf("--> publishing to %s as topic %q", nsqd, topic)
 
 	prod, err := nsq.NewProducer(nsqd, nsq.NewConfig())
 	if err != nil {
@@ -44,6 +46,7 @@ func main() {
 
 	server := &http_to_nsq.Server{
 		Log:       log.New(os.Stderr, "http_to_nsq", log.LstdFlags),
+		Secret:    args["--secret"].(string),
 		Topic:     "builds",
 		Publisher: prod,
 	}
