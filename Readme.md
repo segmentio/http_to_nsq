@@ -2,6 +2,8 @@
 
  Publishes HTTP requests to NSQD.
 
+ Currently only JSON bodies are supported, this may be converted to a blob later, but base64 is meh, so for now JSON is it!
+
 ## Usage
 
 #### type Message
