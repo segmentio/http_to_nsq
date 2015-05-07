@@ -31,7 +31,7 @@ const Usage = `
 func main() {
 	args, err := docopt.Parse(Usage, nil, true, Version, false)
 	if err != nil {
-		log.Fatal("error: %s", err)
+		log.Fatal("[error] %s", err)
 	}
 
 	topic := args["--topic"].(string)
@@ -44,7 +44,7 @@ func main() {
 
 	prod, err := nsq.NewProducer(nsqd, nsq.NewConfig())
 	if err != nil {
-		log.Fatal("error starting producer: %s", err)
+		log.Fatal("[error] starting producer: %s", err)
 	}
 
 	server := &http_to_nsq.Server{
@@ -56,6 +56,6 @@ func main() {
 
 	err = http.ListenAndServe(addr, server)
 	if err != nil {
-		log.Fatal("error binding: %s", err)
+		log.Fatal("[error] binding: %s", err)
 	}
 }
