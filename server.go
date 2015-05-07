@@ -69,6 +69,7 @@ func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	s.Log.Printf("[info] publishing %s %s", msg.Method, msg.URL)
 	err = s.Publisher.Publish(s.Topic, b)
 	if err != nil {
 		s.Log.Printf("[error] publishing body: %s", err)
