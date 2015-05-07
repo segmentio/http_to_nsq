@@ -35,6 +35,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Publish requests to NSQD.
 func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
 	var body map[string]interface{}
 
