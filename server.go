@@ -19,6 +19,7 @@ type Message struct {
 type Server struct {
 	Topic     string
 	Publisher Publisher
+	Log       *log.Logger
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +27,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		log.Printf("error decoding body: %s", err)
+		s.Log.Printf("error decoding body: %s", err)
 		http.Error(w, "Error parsing request body", 400)
 		return
 	}
@@ -40,14 +41,14 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	b, err := json.Marshal(msg)
 	if err != nil {
-		log.Printf("error marshalling message: %s", err)
+		s.Log.Printf("error marshalling message: %s", err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
 
 	err = s.Publisher.Publish(s.Topic, b)
 	if err != nil {
-		log.Printf("error publishing body: %s", err)
+		s.Log.Printf("error publishing body: %s", err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}

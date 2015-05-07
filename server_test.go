@@ -2,9 +2,11 @@ package main
 
 import "github.com/bmizerany/assert"
 import "net/http/httptest"
+import "io/ioutil"
 import "net/http"
 import "testing"
 import "bytes"
+import "log"
 
 type pub struct {
 	msgs [][]byte
@@ -19,6 +21,7 @@ func TestServer_ServeHTTP_POST(t *testing.T) {
 	p := new(pub)
 
 	s := Server{
+		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
 		Topic:     "builds",
 		Publisher: p,
 	}
@@ -43,6 +46,7 @@ func TestServer_ServeHTTP_malformedJSON(t *testing.T) {
 	p := new(pub)
 
 	s := Server{
+		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
 		Topic:     "builds",
 		Publisher: p,
 	}
