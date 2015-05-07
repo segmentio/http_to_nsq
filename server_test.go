@@ -20,7 +20,7 @@ func (p *pub) Publish(topic string, body []byte) error {
 func TestServer_ServeHTTP_POST(t *testing.T) {
 	p := new(pub)
 
-	s := server{
+	s := Server{
 		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
 		Topic:     "builds",
 		Publisher: p,
@@ -45,7 +45,7 @@ func TestServer_ServeHTTP_POST(t *testing.T) {
 func TestServer_ServeHTTP_malformedJSON(t *testing.T) {
 	p := new(pub)
 
-	s := server{
+	s := Server{
 		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
 		Topic:     "builds",
 		Publisher: p,
