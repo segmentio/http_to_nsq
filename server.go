@@ -27,6 +27,15 @@ type Server struct {
 
 // ServeHTTP implements http.Handler.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.URL.Path {
+	case "/internal/health":
+		fmt.Fprintf(w, "OK\n")
+	default:
+		s.publish(w, r)
+	}
+}
+
+func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
 	var body map[string]interface{}
 
 	err := json.NewDecoder(r.Body).Decode(&body)

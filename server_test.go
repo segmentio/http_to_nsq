@@ -64,3 +64,23 @@ func TestServer_ServeHTTP_malformedJSON(t *testing.T) {
 	assert.Equal(t, 400, w.Code)
 	assert.Equal(t, "Error parsing request body\n", w.Body.String())
 }
+
+func TestServer_ServeHTTP_health(t *testing.T) {
+	p := new(pub)
+
+	s := Server{
+		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
+		Topic:     "builds",
+		Publisher: p,
+	}
+
+	r, err := http.NewRequest("GET", "/internal/health", nil)
+	assert.Equal(t, nil, err)
+
+	w := httptest.NewRecorder()
+	s.ServeHTTP(w, r)
+
+	assert.Equal(t, 0, len(p.msgs))
+	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, "OK\n", w.Body.String())
+}
