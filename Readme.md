@@ -2,6 +2,10 @@
 
  Publishes HTTP requests to NSQD.
 
+## About
+
+ Useful for things like creating an end-point for CI web hooks.
+
  Currently only JSON bodies are supported, this may be converted to a blob later, but base64 is meh, so for now JSON is it!
 
 ## Usage
