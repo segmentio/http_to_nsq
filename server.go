@@ -1,4 +1,4 @@
-package main
+package http_to_nsq
 
 import "encoding/json"
 import "net/http"

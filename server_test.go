@@ -1,4 +1,4 @@
-package main
+package http_to_nsq
 
 import "github.com/bmizerany/assert"
 import "net/http/httptest"

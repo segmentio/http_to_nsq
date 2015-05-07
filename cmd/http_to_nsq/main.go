@@ -3,9 +3,9 @@ package main
 import "github.com/segmentio/http_to_nsq"
 import "github.com/bitly/go-nsq"
 import "github.com/tj/docopt"
-
-// import "net/http"
+import "net/http"
 import "log"
+import "os"
 
 var Version = "0.0.1"
 
@@ -24,19 +24,26 @@ const Usage = `
 `
 
 func main() {
-	_, err := docopt.Parse(Usage, nil, true, Version, false)
+	args, err := docopt.Parse(Usage, nil, true, Version, false)
 	if err != nil {
 		log.Fatal("error: %s", err)
 	}
 
-	// nsqd := args["--nsqd-tcp-address"].(string)
-	// prod, err := nsq.NewProducer(nsqd, nsq.NewConfig())
-	// if err != nil {
-	// 	log.Fatal("error starting producer: %s", err)
-	// }
+	nsqd := args["--nsqd-tcp-address"].(string)
+	prod, err := nsq.NewProducer(nsqd, nsq.NewConfig())
+	if err != nil {
+		log.Fatal("error starting producer: %s", err)
+	}
 
-	// err := http.ListenAndServe(addr, handler)
-	// if err != nil {
-	// 	log.Fatal("error binding: %s", err)
-	// }
+	server := http_to_nsq.Server{
+		Log:       log.New(os.Stderr, "http_to_nsq", log.LstdFlags),
+		Topic:     "builds",
+		Publisher: prod,
+	}
+
+	addr := args["--address"].(string)
+	err = http.ListenAndServe(addr, server)
+	if err != nil {
+		log.Fatal("error binding: %s", err)
+	}
 }
