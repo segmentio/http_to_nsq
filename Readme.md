@@ -2,6 +2,14 @@
 
  Publishes HTTP requests to NSQD.
 
+## Installation
+
+ Binary [releases](https://github.com/segmentio/http_to_nsq/releases), or via:
+
+```
+$ go get github.com/segmentio/http_to_nsq/cmd/http_to_nsq
+```
+
 ## About
 
  Useful for things like creating an end-point for CI web hooks.
