@@ -11,7 +11,10 @@ var Version = "0.0.1"
 
 const Usage = `
   Usage:
-    http_to_nsq --topic name [--nsqd-tcp-address addr] [--address addr]
+    http_to_nsq --topic name
+      [--nsqd-tcp-address addr]
+      [--address addr]
+      [--secret secret]
     http_to_nsq -h | --help
     http_to_nsq --version
 
