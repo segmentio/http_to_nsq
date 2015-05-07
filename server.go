@@ -6,7 +6,7 @@ import "fmt"
 import "log"
 
 // Publisher.
-type Publisher interface {
+type publisher interface {
 	Publish(topic string, body []byte) error
 }
 
@@ -19,14 +19,14 @@ type Message struct {
 }
 
 // Server publishing requests as Messages.
-type Server struct {
+type server struct {
 	Topic     string
-	Publisher Publisher
+	Publisher publisher
 	Log       *log.Logger
 }
 
 // ServeHTTP implements http.Handler.
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var body map[string]interface{}
 
 	err := json.NewDecoder(r.Body).Decode(&body)
