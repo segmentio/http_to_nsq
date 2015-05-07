@@ -27,7 +27,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
 		log.Printf("error decoding body: %s", err)
-		http.Error(w, "Invalid request body – must be JSON", 400)
+		http.Error(w, "Error parsing request body", 400)
 		return
 	}
 
