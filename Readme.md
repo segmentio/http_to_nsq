@@ -16,3 +16,7 @@ type Message struct {
   Body   map[string]interface{} `json:"body"`
 }
 ```
+
+# License
+
+MIT
