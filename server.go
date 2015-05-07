@@ -5,10 +5,12 @@ import "net/http"
 import "fmt"
 import "log"
 
+// Publisher.
 type Publisher interface {
 	Publish(topic string, body []byte) error
 }
 
+// Message published to NSQD.
 type Message struct {
 	URL    string                 `json:"url"`
 	Method string                 `json:"method"`
@@ -16,12 +18,14 @@ type Message struct {
 	Body   map[string]interface{} `json:"body"`
 }
 
+// Server publishing requests as Messages.
 type Server struct {
 	Topic     string
 	Publisher Publisher
 	Log       *log.Logger
 }
 
+// ServeHTTP implements http.Handler.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var body map[string]interface{}
 
