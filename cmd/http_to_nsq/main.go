@@ -48,7 +48,7 @@ func main() {
 	}
 
 	server := &http_to_nsq.Server{
-		Log:       log.New(os.Stderr, "http_to_nsq ", log.LstdFlags),
+		Log:       log.New(os.Stderr, "", log.LstdFlags),
 		Secret:    args["--secret"].(string),
 		Topic:     "builds",
 		Publisher: prod,
