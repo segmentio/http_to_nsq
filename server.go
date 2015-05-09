@@ -43,7 +43,7 @@ func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
 	secret := r.URL.Query().Get("secret")
 
 	if s.Secret != "" && s.Secret != secret {
-		s.Log.Printf("invalid secret")
+		s.Log.Printf("[error] invalid secret")
 		http.Error(w, http.StatusText(403), 403)
 		return
 	}
