@@ -1,4 +1,12 @@
 
+v0.1.0 / 2015-05-12
+===================
+
+  * add missing [error] to a log
+  * add log for publishing
+  * add log levels
+  * remove log prefix
+
 v0.0.3 / 2015-05-07
 ===================
 
