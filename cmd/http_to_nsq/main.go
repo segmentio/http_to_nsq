@@ -22,6 +22,7 @@ const Usage = `
     --topic name             nsqd topic name
     --secret secret          secret string [default: ]
     --address addr           bind address [default: localhost:3000]
+    --topic topic            name of the topic where we should publish [default: builds]
     --nsqd-tcp-address addr  nsqd tcp address [default: localhost:4150]
     -h, --help               output help information
     -v, --version            output version
@@ -50,7 +51,7 @@ func main() {
 	server := &http_to_nsq.Server{
 		Log:       log.New(os.Stderr, "", log.LstdFlags),
 		Secret:    args["--secret"].(string),
-		Topic:     "builds",
+		Topic:     args["--topic"].(string),
 		Publisher: prod,
 	}
 
