@@ -19,10 +19,9 @@ const Usage = `
     http_to_nsq --version
 
   Options:
-    --topic name             	nsqd topic name
+    --topic name             	nsqd topic name [default: builds]
     --secret secret          	secret string [default: ]
     --address addr           	bind address [default: localhost:3000]
-    --subscribe-topic subscribe name of the topic where we should publish [default: builds]
     --nsqd-tcp-address addr  	nsqd tcp address [default: localhost:4150]
     -h, --help               	output help information
     -v, --version            	output version
@@ -42,8 +41,7 @@ func main() {
 
 	log.Printf("starting http_to_nsq %s", Version)
 	log.Printf("--> binding to %s", addr)
-	log.Printf("--> subscribing to topic %s", addr)
-	log.Printf("--> publishing to %s as topic %q", nsqd, subscribeTopic)
+	log.Printf("--> publishing to %s as topic %q", nsqd, topic)
 
 	prod, err := nsq.NewProducer(nsqd, nsq.NewConfig())
 	if err != nil {
@@ -53,7 +51,7 @@ func main() {
 	server := &http_to_nsq.Server{
 		Log:       log.New(os.Stderr, "", log.LstdFlags),
 		Secret:    args["--secret"].(string),
-		Topic:     subscribeTopic,
+		Topic:     topic,
 		Publisher: prod,
 	}
 
