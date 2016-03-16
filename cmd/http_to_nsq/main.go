@@ -1,11 +1,14 @@
 package main
 
-import "github.com/segmentio/http_to_nsq"
-import "github.com/bitly/go-nsq"
-import "github.com/tj/docopt"
-import "net/http"
-import "log"
-import "os"
+import (
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/nsqio/go-nsq"
+	"github.com/segmentio/http_to_nsq"
+	"github.com/tj/docopt"
+)
 
 var Version = "0.1.0"
 

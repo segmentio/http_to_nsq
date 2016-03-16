@@ -1,12 +1,15 @@
 package http_to_nsq
 
-import "github.com/bmizerany/assert"
-import "net/http/httptest"
-import "io/ioutil"
-import "net/http"
-import "testing"
-import "bytes"
-import "log"
+import (
+	"bytes"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/bmizerany/assert"
+)
 
 type pub struct {
 	msgs [][]byte

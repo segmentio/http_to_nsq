@@ -1,9 +1,11 @@
 package http_to_nsq
 
-import "encoding/json"
-import "net/http"
-import "fmt"
-import "log"
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+)
 
 // Publisher.
 type publisher interface {
