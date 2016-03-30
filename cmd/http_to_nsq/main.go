@@ -22,12 +22,12 @@ const Usage = `
     http_to_nsq --version
 
   Options:
-    --topic name             nsqd topic name
-    --secret secret          secret string [default: ]
-    --address addr           bind address [default: localhost:3000]
-    --nsqd-tcp-address addr  nsqd tcp address [default: localhost:4150]
-    -h, --help               output help information
-    -v, --version            output version
+    --topic name             	nsqd topic name [default: builds]
+    --secret secret          	secret string [default: ]
+    --address addr           	bind address [default: localhost:3000]
+    --nsqd-tcp-address addr  	nsqd tcp address [default: localhost:4150]
+    -h, --help               	output help information
+    -v, --version            	output version
 
 `
 
@@ -40,6 +40,7 @@ func main() {
 	topic := args["--topic"].(string)
 	addr := args["--address"].(string)
 	nsqd := args["--nsqd-tcp-address"].(string)
+	subscribeTopic := args["--subscribe-topic"].(string)
 
 	log.Printf("starting http_to_nsq %s", Version)
 	log.Printf("--> binding to %s", addr)
@@ -53,7 +54,7 @@ func main() {
 	server := &http_to_nsq.Server{
 		Log:       log.New(os.Stderr, "", log.LstdFlags),
 		Secret:    args["--secret"].(string),
-		Topic:     "builds",
+		Topic:     topic,
 		Publisher: prod,
 	}
 
