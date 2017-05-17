@@ -28,7 +28,6 @@ const Usage = `
     --nsqd-tcp-address addr  nsqd tcp address [default: localhost:4150]
     -h, --help               output help information
     -v, --version            output version
-
 `
 
 func main() {
