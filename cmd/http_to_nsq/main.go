@@ -40,6 +40,7 @@ func main() {
 	topic := args["--topic"].(string)
 	addr := args["--address"].(string)
 	nsqd := args["--nsqd-tcp-address"].(string)
+	secret := args["--secret"].(string)
 
 	log.Printf("starting http_to_nsq %s", Version)
 	log.Printf("--> binding to %s", addr)
@@ -52,8 +53,8 @@ func main() {
 
 	server := &http_to_nsq.Server{
 		Log:       log.New(os.Stderr, "", log.LstdFlags),
-		Secret:    args["--secret"].(string),
-		Topic:     "builds",
+		Secret:    secret,
+		Topic:     topic,
 		Publisher: prod,
 	}
 
