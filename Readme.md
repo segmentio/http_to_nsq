@@ -22,10 +22,10 @@ $ go get github.com/segmentio/http_to_nsq/cmd/http_to_nsq
 
 ```go
 type Message struct {
-  URL    string                 `json:"url"`
-  Method string                 `json:"method"`
-  Header http.Header            `json:"header"`
-  Body   map[string]interface{} `json:"body"`
+	URL    string          `json:"url"`
+	Method string          `json:"method"`
+	Header http.Header     `json:"header"`
+	Body   json.RawMessage `json:"body"`
 }
 ```
 
