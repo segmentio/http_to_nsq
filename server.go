@@ -14,10 +14,10 @@ type publisher interface {
 
 // Message published to NSQD.
 type Message struct {
-	URL    string                 `json:"url"`
-	Method string                 `json:"method"`
-	Header http.Header            `json:"header"`
-	Body   map[string]interface{} `json:"body"`
+	URL    string          `json:"url"`
+	Method string          `json:"method"`
+	Header http.Header     `json:"header"`
+	Body   json.RawMessage `json:"body"`
 }
 
 // Server publishing requests as Messages.
@@ -40,7 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Publish requests to NSQD.
 func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
-	var body map[string]interface{}
+	var body json.RawMessage
 
 	secret := r.URL.Query().Get("secret")
 
