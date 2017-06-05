@@ -1,4 +1,11 @@
 
+0.2.0 / 2017-06-05
+===================
+
+  * Fix: Respect Topic argument supplied to binary.
+  * Improvement: Faster JSON Parsing.
+
+
 v0.1.0 / 2015-05-12
 ===================
 
