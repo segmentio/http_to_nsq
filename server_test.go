@@ -2,6 +2,7 @@ package http_to_nsq
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,6 +21,10 @@ func (p *pub) Publish(topic string, body []byte) error {
 	return nil
 }
 
+func (p *pub) Reset() {
+	p.msgs = nil
+}
+
 func TestServer_ServeHTTP_POST(t *testing.T) {
 	p := new(pub)
 
@@ -29,20 +34,55 @@ func TestServer_ServeHTTP_POST(t *testing.T) {
 		Publisher: p,
 	}
 
-	b := bytes.NewBufferString(`{ "foo": "bar" }`)
+	for _, method := range []string{"POST", "PUT", "DELETE"} {
+		t.Run(method, func(t *testing.T) {
+			defer p.Reset()
 
-	r, err := http.NewRequest("POST", "/build", b)
-	assert.Equal(t, nil, err)
-	r.Header.Set("Content-Type", "application/json")
+			b := bytes.NewBufferString(`{ "foo": "bar" }`)
 
-	w := httptest.NewRecorder()
-	s.ServeHTTP(w, r)
+			r, err := http.NewRequest(method, "/build", b)
+			assert.Equal(t, nil, err)
+			r.Header.Set("Content-Type", "application/json")
 
-	assert.Equal(t, 1, len(p.msgs))
-	assert.Equal(t, `{"url":"/build","method":"POST","header":{"Content-Type":["application/json"]},"body":{"foo":"bar"}}`, string(p.msgs[0]))
+			w := httptest.NewRecorder()
+			s.ServeHTTP(w, r)
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, ":)", w.Body.String())
+			body := fmt.Sprintf(`{"url":"/build","method":"%s","header":{"Content-Type":["application/json"]},"body":{"foo":"bar"}}`, method)
+
+			assert.Equal(t, 1, len(p.msgs))
+			assert.Equal(t, body, string(p.msgs[0]))
+
+			assert.Equal(t, 200, w.Code)
+			assert.Equal(t, ":)", w.Body.String())
+		})
+	}
+}
+
+func TestServer_ServeHTTP_InvalidMethods(t *testing.T) {
+	p := new(pub)
+
+	s := Server{
+		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
+		Topic:     "builds",
+		Publisher: p,
+	}
+
+	for _, method := range []string{"GET", "OPTIONS", "HEAD", "CONNECT"} {
+		t.Run(method, func(t *testing.T) {
+			b := bytes.NewBufferString(`{ "foo": "bar" }`)
+			r, err := http.NewRequest(method, "/build", b)
+			assert.Equal(t, nil, err)
+			r.Header.Set("Content-Type", "application/json")
+
+			w := httptest.NewRecorder()
+			s.ServeHTTP(w, r)
+
+			assert.Equal(t, 0, len(p.msgs))
+
+			assert.Equal(t, 405, w.Code)
+			assert.Equal(t, "Method Not Allowed\n", w.Body.String())
+		})
+	}
 }
 
 func TestServer_ServeHTTP_secret_invalid(t *testing.T) {
