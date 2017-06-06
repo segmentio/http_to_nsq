@@ -45,6 +45,28 @@ func TestServer_ServeHTTP_POST(t *testing.T) {
 	assert.Equal(t, ":)", w.Body.String())
 }
 
+func TestServer_ServeHTTP_GET(t *testing.T) {
+	p := new(pub)
+
+	s := Server{
+		Log:       log.New(ioutil.Discard, "", log.LstdFlags),
+		Topic:     "builds",
+		Publisher: p,
+	}
+
+	r, err := http.NewRequest("GET", "/build", nil)
+	assert.Equal(t, nil, err)
+
+	w := httptest.NewRecorder()
+	s.ServeHTTP(w, r)
+
+	assert.Equal(t, 1, len(p.msgs))
+	assert.Equal(t, `{"url":"/build","method":"GET","header":{},"body":null}`, string(p.msgs[0]))
+
+	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, ":)", w.Body.String())
+}
+
 func TestServer_ServeHTTP_secret_invalid(t *testing.T) {
 	p := new(pub)
 
