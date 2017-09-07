@@ -40,21 +40,21 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Publish requests to NSQD.
 func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
-	var body json.RawMessage
-
 	secret := r.URL.Query().Get("secret")
-
 	if s.Secret != "" && s.Secret != secret {
 		s.Log.Printf("[error] invalid secret")
 		http.Error(w, http.StatusText(403), 403)
 		return
 	}
 
-	err := json.NewDecoder(r.Body).Decode(&body)
-	if err != nil {
-		s.Log.Printf("[error] decoding body: %s", err)
-		http.Error(w, "Error parsing request body", 400)
-		return
+	var body json.RawMessage
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&body)
+		if err != nil {
+			s.Log.Printf("[error] decoding body: %s", err)
+			http.Error(w, "Error parsing request body", 400)
+			return
+		}
 	}
 
 	msg := &Message{
